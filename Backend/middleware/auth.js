@@ -19,3 +19,7 @@ module.exports.userAuth = async (req, res, next) => {
       res.status(401).json({message: "Unauthorized", error: error.message})
     }
 };
+
+module.exports.driverAuth = ()=>{
+  
+}

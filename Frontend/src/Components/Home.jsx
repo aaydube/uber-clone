@@ -5,7 +5,7 @@ const UberInterface = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedRide, setSelectedRide] = useState(null);
-  const locations = ["New York", "H-1442, 2nd Floor, Behind Tyagi Chaupal, New Delhi - 1100074", "Sydney"];
+  const locations = ["New York", "H-1442, New Delhi", "Sydney"];
   const rides = [
     { name: "UberGo", capacity: 4, time: "2 mins away", price: "₹193.20", description: "Affordable, compact rides", image: "/ubergo.png" },
     { name: "Moto", capacity: 1, time: "3 mins away", price: "₹65.17", description: "Affordable motorcycle rides", image: "/moto.png" },

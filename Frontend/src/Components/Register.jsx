@@ -1,17 +1,37 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
+
+  const submithandler = async (e)=>{
+    e.preventDefault()
+    const newUser = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName
+      },
+      email,
+      password
+    }
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+    if(response.status === 201){
+      const data = response.data
+      localStorage.setItem("token", data.token)
+      navigate("/home")
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black px-6 text-white">
       <h1 className="text-2xl font-semibold mb-6">Create an account</h1>
       
-      <div className="w-full max-w-md">
+      <form onSubmit={submithandler} className="w-full max-w-md">
         <div className="flex mb-4">
           <input 
             type="text" 
@@ -61,7 +81,7 @@ export default function RegisterPage() {
             Sign in
           </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 }

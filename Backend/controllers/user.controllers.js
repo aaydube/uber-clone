@@ -22,7 +22,7 @@ module.exports.registerUser = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: "User created Successfully", user: user });
+      .json({ message: "User created Successfully", user, token });
   } catch (error) {
     return res
       .status(401)
