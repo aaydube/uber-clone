@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { Clock, MapPin, ArrowLeft } from 'lucide-react';
+import Map from './Map';
 
 const UberInterface = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedRide, setSelectedRide] = useState(null);
   const locations = ["New York", "H-1442, New Delhi", "Sydney"];
+  // const locations = []
   const rides = [
     { name: "UberGo", capacity: 4, time: "2 mins away", price: "₹193.20", description: "Affordable, compact rides", image: "/ubergo.png" },
     { name: "Moto", capacity: 1, time: "3 mins away", price: "₹65.17", description: "Affordable motorcycle rides", image: "/moto.png" },
     { name: "Premier", capacity: 4, time: "4 mins away", price: "₹193.20", description: "Comfortable sedans, top-quality drivers", image: "/premier.png" },
     { name: "UberAuto", capacity: 3, time: "2 mins away", price: "₹118.21", description: "Affordable auto rides", image: "/uberauto.png" },
   ];
-
+  const ride = rides.find(ride => ride.name === selectedRide)
   const currentLocation = "Your Current Location"; // Placeholder for current location
   const destination = selectedLocation || "Destination"; // If a location is selected, show it as the destination
 
@@ -25,22 +27,7 @@ const UberInterface = () => {
       </div>
 
       {/* Map Section */}
-      <div className="flex-1 bg-gray-100">
-        <div className="w-full h-full bg-white">
-          <div className="w-full h-full relative">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-6 h-10 bg-gray-300 transform -rotate-12"
-                style={{
-                  left: `${Math.random() * 80 + 10}%`,
-                  top: `${Math.random() * 80 + 10}%`
-                }}
-              ></div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <Map/>
 
       {/* Bottom Sheet */}
       <div 
@@ -67,24 +54,31 @@ const UberInterface = () => {
             </button>
 
             {/* Confirm Ride Section */}
-            <h2 className="text-2xl text-center font-semibold">Confirm Your Ride</h2>
-            <div className="flex flex-col items-center space-x-4">
-              <img src={rides.find(ride => ride.name === selectedRide).image} alt={selectedRide} className="h-24" />
-              <div>
-                <h3 className="font-semibold">{selectedRide}</h3>
-                <p className="text-gray-600 text-sm">{currentLocation} to {destination}</p>
-                <p className="text-sm text-gray-500">Time: {rides.find(ride => ride.name === selectedRide).time}</p>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <p className="font-semibold text-xl">{rides.find(ride => ride.name === selectedRide).price}</p>
-              <button 
-                onClick={() => alert("Ride Confirmed!")}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg"
-              >
-                Confirm Ride
-              </button>
-            </div>
+            <div className="p-2 rounded-xl w-full max-w-md mx-auto">
+      <h2 className="text-2xl text-center font-semibold">Confirm Your Ride</h2>
+
+      <div className="flex flex-col items-center gap-4 mt-4">
+        <img src={ride.image} alt={selectedRide} className="h-28" />
+
+        <div className="text-center">
+          <h3 className="font-semibold text-2xl">{selectedRide}</h3>
+          <p className="text-gray-600 text-lg">From: {currentLocation}</p>
+          <p className="text-gray-600 text-lg">To: {destination}</p>
+          <p className="text-sm text-gray-500">Arrival in {ride.time}</p>
+        </div>
+      </div>
+
+
+      <div className="flex justify-between items-center pt-12">
+          <p className="font-semibold text-2xl bg-gray-100 rounded-lg p-3 text-black">₹100</p>
+        <button
+          onClick={() => alert("Ride Confirmed!")}
+          className="px-16 py-4 font-semibold bg-black text-white rounded-lg"
+        >
+          Confirm Ride
+        </button>
+      </div>
+    </div>
           </div>
         ) : (
           <>
@@ -102,7 +96,7 @@ const UberInterface = () => {
                     <div
                       key={index}
                       onClick={() => setSelectedRide(ride.name)}
-                      className={`flex items-center justify-between p-4 rounded-lg cursor-pointer border ${selectedRide === ride.name ? "border-black" : "border-gray-300"} mb-2`}
+                      className={`flex items-center justify-between p-4 rounded-lg active:border-black border-2 cursor-pointer ${selectedRide === ride.name ? "border-black" : "border-gray-300"} mb-2`}
                     >
                       <div className="flex items-center space-x-4">
                         <img src={ride.image} alt={ride.name} className="h-12" />

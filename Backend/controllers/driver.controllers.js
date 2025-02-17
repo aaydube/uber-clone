@@ -1,32 +1,55 @@
 const { validationResult } = require("express-validator")
 const driverModel = require("../models/driver.model")
 const driverService = require("../services/driver.services")
-const cookie = require("cookie-parser")
 
-module.exports.registerDriver = (req,res)=>{
+module.exports.registerDriver = async (req,res)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty){
         res.status(401).json({
             message: "Validation Error", errors
         })
     }
-    const {fullname, email, password, vehicle} = req.body
-    const pass = driverModel.hashPassword(password)
-    const {firstname, lastname} = fullname
-    const driver = driverService.createCaptain(firstname, lastname, email, {password: pass}, vehicle.color, vehicle.plate, vehicle.capacity, vehicle.vehicleType  )
+    try {
+        const {fullname, email, password, vehicle} = req.body
+        const pass = await driverModel.hashPassword(password)
+        const {firstname, lastname} = fullname
+        const driver = await driverService.createDriver(firstname, lastname, email, pass, vehicle.color, vehicle.plate, vehicle.capacity, vehicle.vehicleType  )
+        const token = await driver.generateToken()
+        res.cookie("token", token)
+        return res.status(201).json({message: "User Registered Successfully", driver, token})
+        
+    } catch (error) {
+        return res.status(401).json({message: "Server Error", error: error.message})
+    }
     
-    const token = driver.generateToken()
-    res.cookie("token", token)
 }
 
-module.exports.loginDriver = ()=>{
+module.exports.loginDriver = async (req,res)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty()){
         res.status(401).json({message: "Validation Error", errors})
     }
-    const {email, password} = req.body
-    const driver = driverModel.findOne({email})
-    const is = driver.comparePassword()
+    try {
+        const {email, password} = req.body
+        const driver = await driverModel.findOne({email}).select("+password")
+        const isCorrect = await driver.comparePassword(password)
+        const token = await driver.generateToken()
+        res.cookie("token", token)
+
+        return res.status(201).json({message: "Logged In Successfully", token})
+    } catch (error) {
+        return res.status(401).json({message: "Server Error", error: error.message})
+    }
 }
-module.exports.Profile = {}
-module.exports.logout = {}
+module.exports.Profile = (req,res)=>{
+    return res.status(201).json(req.driver)
+}
+module.exports.logout = async(req,res)=>{
+    try {
+        const token = await req.cookies.token
+        res.clearCookie(token)
+        return res.status(201).json({message: "Logout Successfully"})
+    } catch (error) {
+        return res.status(401).json({message:"Server Error", error: error.message})
+    }
+}

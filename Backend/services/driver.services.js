@@ -1,8 +1,8 @@
 const driverModel = require('../models/driver.model');
 
-module.exports.createCaptain = async ({
+module.exports.createDriver = async (
     firstname, lastname, email, password, color, plate, capacity, vehicleType
-}) => {
+) => {
     if (!firstname || !email || !password || !color || !plate || !capacity || !vehicleType) {
         throw new Error('All fields are required');
     }
