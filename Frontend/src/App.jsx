@@ -26,7 +26,7 @@ const App = () => {
           // </DriverWrapper>
         } />
         <Route path='/home' element={
-          // <UserWrapper>
+          <UserWrapper>
             <Home/>
         // </UserWrapper>
       } />

@@ -6,7 +6,7 @@ module.exports.registerDriver = async (req,res)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty){
         res.status(401).json({
-            message: "Validation Error", errors
+            message: "Validation Error", error: errors.array()
         })
     }
     try {
@@ -27,7 +27,7 @@ module.exports.registerDriver = async (req,res)=>{
 module.exports.loginDriver = async (req,res)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty()){
-        res.status(401).json({message: "Validation Error", errors})
+        res.status(401).json({message: "Validation Error", error: errors.array()})
     }
     try {
         const {email, password} = req.body

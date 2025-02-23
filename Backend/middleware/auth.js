@@ -5,7 +5,7 @@ const driverModel = require("../models/driver.model")
 
 module.exports.userAuth = async (req, res, next) => {
   try {
-      const token = await req.cookies.token;
+      const token = await req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
       const isBlacklisted = await blacklistedModel.findOne({token})
       if(isBlacklisted){
         return res.status(401).json({message: "unauthorized"})
