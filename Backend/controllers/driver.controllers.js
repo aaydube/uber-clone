@@ -36,7 +36,7 @@ module.exports.loginDriver = async (req,res)=>{
         const token = await driver.generateToken()
         res.cookie("token", token)
 
-        return res.status(201).json({message: "Logged In Successfully", token})
+        return res.status(201).json({message: "Logged In Successfully", token, driver})
     } catch (error) {
         return res.status(401).json({message: "Server Error", error: error.message})
     }

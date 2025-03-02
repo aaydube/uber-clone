@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import {User} from 'lucide-react'
+import axios from 'axios';
 
-const RideRequestPopup = () => {
+const RideRequestPopup = ({Ride}) => {
   const [showPopup, setShowPopup] = useState(true);
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOTP] = useState('');
 
-  const handleAccept = () => {
-    setShowOTP(true);
-  };
+  console.log(Ride)
 
-  const handleIgnore = () => {
-    setShowPopup(false);
-  };
+  const handleaccept = async()=>{
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {rideId:Ride._id},{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }) 
+    console.log(response)
+    setShowOTP(true)
+  }
 
   const verifyOTP = () => {
-    // Add OTP verification logic here
     console.log('Verifying OTP:', otp);
     setShowOTP(false);
     setShowPopup(false);
@@ -34,14 +38,14 @@ const RideRequestPopup = () => {
                   <User/>
                 </div>
                 <div>
-                  <h3 className="font-semibold">Aayush</h3>
+                  <h3 className="font-semibold capitalize">{Ride.user.fullname.firstname} {Ride.user.fullname.lastname}</h3>
                   <div className="flex space-x-2">
                     <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded">GooglePay</span>
                     <span className="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded">Discount</span>
                   </div>
                 </div>
                 <div className="ml-auto">
-                  <p className="font-semibold">₹205.00</p>
+                  <p className="font-semibold">₹{Ride.fare}</p>
                   <p className="text-sm text-gray-500">2.2 km</p>
                 </div>
               </div>
@@ -49,24 +53,24 @@ const RideRequestPopup = () => {
               <div className="space-y-2">
                 <div>
                   <p className="text-sm text-gray-500">PICK UP</p>
-                  <p className="font-medium">7958 Swift Village</p>
+                  <p className="font-normal capitalize">{Ride.pickup}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">DROP OFF</p>
-                  <p className="font-medium">105 William St, Chicago, US</p>
+                  <p className="font-normal capitalize">{Ride.destination}</p>
                 </div>
               </div>
 
               <div className="flex space-x-3 pt-2">
                 <button 
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                  onClick={handleIgnore}
+                  onClick={()=>setShowPopup(false)}
                 >
                   Ignore
                 </button>
                 <button 
                   className="flex-1 px-4 py-2 bg-black text-white hover:bg-zinc-800  rounded-lg transition-colors"
-                  onClick={handleAccept}
+                  onClick={handleaccept}
                 >
                   Accept
                 </button>

@@ -23,7 +23,7 @@ module.exports.userAuth = async (req, res, next) => {
 
 module.exports.driverAuth = async(req,res,next)=>{
   try {
-    const token = await req.cookies.token
+    const token = await req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
     const decoded = await jwt.verify(token, process.env.JWT_SECRET)
     const driver = await driverModel.findById(decoded._id)
     req.driver = driver

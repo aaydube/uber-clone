@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
+import {UserDataContext} from "../context/UserContext"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const {setuser} = useContext(UserDataContext)
 
   const submithandler = async (e) => {
     e.preventDefault();
@@ -22,6 +24,8 @@ export default function LoginPage() {
     );
     if (response.status === 201) {
       const data = response.data;
+      setuser(data.user)
+      localStorage.setItem("userId", data.user._id);
       localStorage.setItem("token", data.token);
       navigate("/home");
     }

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Clock, MapPin, ArrowLeft } from 'lucide-react';
 import Map from './Map';
 import axios from 'axios'
+import { UserDataContext } from '../context/UserContext';
+import {SocketContext} from "../context/SocketContext"
+import LocationPanel from './LocationPanel';
 
 const UberInterface = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -13,8 +16,17 @@ const UberInterface = () => {
   const [activeField, setactiveField] = useState("")
   const [Fare, setFare] = useState([])
   const [lookingForDriver, setLookingForDriver] = useState(false);
+  const {user} = useContext(UserDataContext)
+  const {socket} = useContext(SocketContext)
+  
+  useEffect(() => {
+   socket.emit("join", {userId:localStorage.getItem("userId"), userType:"user"} )
+  }, [])
 
-
+  socket.on("ride-accepted",(ride)=>{
+    console.log(ride)
+  })
+  
   const originhandler = async(e)=>{
     setorigin(e.target.value)
     const response  = await axios.post(`${import.meta.env.VITE_BASE_URL}/maps/get-suggestions?input=${origin}`)
@@ -34,7 +46,7 @@ const UberInterface = () => {
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{pickup: origin, destination, vehicleType: selectedRide.type}, {headers:  {
       Authorization: `Bearer ${localStorage.getItem('token')}`
   }})
-    console.log(response)
+    // console.log(response)
   }
   
   const rides = [
@@ -52,9 +64,9 @@ const UberInterface = () => {
       </div>
 
       {/* Map Section */}
-      <div className='h-full overflow-hidden w-full'>
+      {/* <div className='h-full overflow-hidden w-full'>
       <Map/>
-      </div>
+      </div> */}
 
       {/* Bottom Sheet */}
       <div 
@@ -201,40 +213,7 @@ const UberInterface = () => {
         )}
 
         {/* Locations List */}
-        {isExpanded && !selectedLocation && (
-          locations.length > 0 ? (
-            <div className="pt-5">
-              {locations.map((location, index) => (
-                <div 
-                  key={index} 
-                  className="w-full  flex items-center mb-2 p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 transition"
-                  onClick={() => {
-                    if(activeField==="origin"){
-                      setorigin(location)
-                    }else{
-                      setdestination(location)
-                    }
-                    setlocations([])
-                  }}
-                >
-                  <MapPin className="w-5 h-5 text-gray-500" />
-                  <h1 className="pl-5 w-[90%] text-gray-800">{location}</h1>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-6 space-y-4">
-              <div className="bg-gray-200 p-4 rounded-lg">
-                <h3 className="font-medium">Recent Locations</h3>
-                <div className="mt-2 space-y-2 text-gray-500">
-                  <p>Home</p>
-                  <p>Work</p>
-                  <p>Gym</p>
-                </div>
-              </div>
-            </div>
-          )
-        )}
+        {isExpanded && !selectedLocation && <LocationPanel locations={locations} />}
       </div>
     </div>
   );

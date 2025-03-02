@@ -21,14 +21,14 @@ const App = () => {
         <Route path='/driver-login' element={<DriverLogin/>} />
         <Route path='/driver-register' element={<DriverRegister/>} />
         <Route path='/driver-dashboard' element={
-          // <DriverWrapper>
+          <DriverWrapper>
             <DriverDash/>
-          // </DriverWrapper>
+           </DriverWrapper>
         } />
         <Route path='/home' element={
           <UserWrapper>
             <Home/>
-        // </UserWrapper>
+        </UserWrapper>
       } />
       </Routes>
     </div>

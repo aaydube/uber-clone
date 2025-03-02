@@ -28,20 +28,21 @@ const LiveTrackingMap = () => {
         lng: position.coords.longitude,
       });
     };
-
+    
     const errorCallback = (error) => {
       setError(error.message);
       console.error("Geolocation error:", error);
     };
-
+    
     const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       maximumAge: 0,
       timeout: 5000,
     });
-
+  
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
+
 
   if (!isLoaded) {
     return (

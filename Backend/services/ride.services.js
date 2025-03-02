@@ -65,3 +65,60 @@ module.exports.createRide = async ({
 
     return ride;
 }
+
+module.exports.confirmRide = async({driver, rideId})=>{
+    if(!rideId){
+        throw new Error("rideId is required")
+    }
+    await rideModel.findOneAndUpdate({_id: rideId}, {
+        status: "accepted",
+        driver: driver._id
+    })
+
+    const ride = await rideModel.findOne({_id:rideId}).populate("user").populate("driver").select("+otp") 
+    if(!ride){
+        throw new Error("ride not found")
+    }
+    return ride
+}
+
+module.exports.startRide = async ({rideId, otp})=>{
+    if(!rideId){
+        throw new Error("rideId is required")
+    }
+    if(!otp){
+        throw new Error("OTP is required")
+    }
+    const ride = await rideModel.findOne({_id: rideId}).populate("user").populate("driver").select("+otp")
+    if(!ride){
+        throw new Error("ride not found")
+    }
+    
+    if(otp !== ride.otp){
+        throw new Error("invalid OTP")
+    }
+    if(ride.status !== "accepted"){
+        throw new Error("ride is not accepted")
+    }
+    await rideModel.findOneAndUpdate({_id: rideId}, {
+        status: "ongoing"
+    })
+    return ride;
+}
+
+module.exports.endRide = async({rideId})=>{
+    if(!rideId){
+        throw new Error("rideId is required")
+    }
+    const ride = await rideModel.findOne({_id: rideId}).populate("user").populate("driver").select("+otp")
+    if(!ride){
+        throw new Error("ride not found")
+    }
+    if(ride.status !== "ongoing"){
+        throw new Error("ride not ongoing")
+    }
+    await rideModel.findOneAndUpdate({_id: rideId}, {
+        status: "completed"
+    })
+    return ride
+}

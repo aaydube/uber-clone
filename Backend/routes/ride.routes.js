@@ -18,5 +18,23 @@ router.post('/get-fare',
     rideController.getFare
 )
 
+router.post("/confirm", 
+    authMiddleware.driverAuth,
+    body('rideId').isString().isLength({ min: 3 }).withMessage('Invalid rideId'),
+    rideController.confirmRide
+)
+
+router.post("/start-ride", 
+    authMiddleware.driverAuth,
+    body('rideId').isString().isLength({ min: 3 }).withMessage('Invalid rideId'),
+    body('otp').isString().isLength({ min: 3, max: 6 }).withMessage('Invalid OTP'),
+    rideController.startRide
+)
+
+router.post("/end-ride", 
+    authMiddleware.driverAuth,
+    body('rideId').isString().isLength({ min: 3 }).withMessage('Invalid rideId'),
+    rideController.endRide
+)
 
 module.exports = router
