@@ -1,15 +1,13 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import {DriverDataContext} from "../context/DriverContext"
 
 export default function DriverLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const {setdriver} = useContext(DriverDataContext)
 
   const submithandler = async (e) => {
     e.preventDefault();
@@ -24,9 +22,8 @@ export default function DriverLoginPage() {
     );
     if (response.status === 201) {
       const data = response.data;
-      setdriver(data.driver)
       localStorage.setItem("username", JSON.stringify(data.driver.fullname))
-      localStorage.setItem("userId", JSON.stringify(data.driver._id))
+      localStorage.setItem("driverId", data.driver._id)
       localStorage.setItem("token", data.token);
       navigate("/driver-dashboard");
     }

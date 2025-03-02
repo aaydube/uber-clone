@@ -73,7 +73,7 @@ module.exports.confirmRide = async(req,res)=>{
   
 }
 
-module.exports.startRide = (req,res)=>{
+module.exports.startRide = async (req,res)=>{
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(401).json({ errors: errors.array() });
@@ -81,7 +81,8 @@ module.exports.startRide = (req,res)=>{
 
   const {rideId, otp} = req.body
   try {
-    const ride = rideService.startRide({rideId, driver:req.driver, otp })
+    const ride = await rideService.startRide({rideId, driver:req.driver, otp })
+    // res.json(ride)
     sendMessageToSocketId(ride.user.socketId,{
       event: "ride-started",
       data: ride
@@ -95,7 +96,7 @@ module.exports.startRide = (req,res)=>{
 }
 
 
-module.exports.endRide = (req,res)=>{
+module.exports.endRide = async(req,res)=>{
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(401).json({ errors: errors.array() });
@@ -103,7 +104,7 @@ module.exports.endRide = (req,res)=>{
 
   const {rideId} = req.body
   try {
-    const ride = rideService.endRide({rideId, driver: req.driver})
+    const ride = await rideService.endRide({rideId, driver: req.driver})
     sendMessageToSocketId(ride.user.socketId,{
       event: "ride-ended",
       data: ride

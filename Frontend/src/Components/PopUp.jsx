@@ -1,29 +1,39 @@
 import React, { useState } from 'react';
 import {User} from 'lucide-react'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const RideRequestPopup = ({Ride}) => {
   const [showPopup, setShowPopup] = useState(true);
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOTP] = useState('');
+  const navigate = useNavigate()
 
-  console.log(Ride)
 
   const handleaccept = async()=>{
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {rideId:Ride._id},{
-      headers:{
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }) 
-    console.log(response)
-    setShowOTP(true)
+    try {
+      setShowOTP(true)
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {rideId:Ride._id},{
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const verifyOTP = () => {
-    console.log('Verifying OTP:', otp);
+  const verifyOTP = async() => {
     setShowOTP(false);
     setShowPopup(false);
+    navigate("/driver-riding", {state:{Ride}})
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/start-ride`, {rideId:Ride._id, otp},{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
   };
+
 
   if (!showPopup) return null;
 

@@ -1,6 +1,13 @@
 import React from 'react'
+import { MapPin } from 'lucide-react';
 
-const LocationPanel = ({locations}) => {
+const LocationPanel = ({
+  locations,
+  activeField,
+  setorigin,
+  setdestination,
+  setlocations
+}) => {
   return (
     <div>
         {
@@ -36,7 +43,6 @@ const LocationPanel = ({locations}) => {
                   </div>
                 </div>)
         }
-      
     </div>
   )
 }

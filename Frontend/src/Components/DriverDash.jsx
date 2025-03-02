@@ -2,26 +2,24 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Clock, Navigation, Receipt, User, LogOut } from 'lucide-react';
 import Map from './Map';
 import RideRequestPopup from './PopUp';
-import { SocketContext } from '../context/SocketContext';
-import {DriverDataContext} from '../context/DriverContext'
+import { SocketContext } from './SocketContext';
 import { useNavigate } from 'react-router-dom';
 
 const DriverDashboard = () => {
     const {socket} = useContext(SocketContext)
     const navigate = useNavigate()
     const driverName = JSON.parse(localStorage.getItem("username"))
-    const {driver} = useContext(DriverDataContext)
     const [newRide, setnewRide] = useState()
 
   useEffect(() => {
-   socket.emit("join", {userType:"driver", userId:JSON.parse(localStorage.getItem("userId"))} )
+   socket.emit("join", {userType:"driver", userId:localStorage.getItem("driverId")} )
 
    const updateLocation = () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
 
             socket.emit('update-location-driver', {
-                userId: driver._id,
+                userId: localStorage.getItem("driverId"),
                 location: {
                     ltd: position.coords.latitude,
                     lng: position.coords.longitude

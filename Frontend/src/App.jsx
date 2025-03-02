@@ -9,6 +9,8 @@ import DriverLogin from './Components/DriverLogin'
 import DriverRegister from './Components/DriverRegister'
 import DriverWrapper from './Components/DriverWrapper'
 import DriverDash from './Components/DriverDash'
+import Riding from './Components/Riding'
+import DriverRiding from './Components/DriverRiding'
 
 const App = () => {
   return (
@@ -20,6 +22,8 @@ const App = () => {
         <Route path='/register' element={<Register/>} />
         <Route path='/driver-login' element={<DriverLogin/>} />
         <Route path='/driver-register' element={<DriverRegister/>} />
+        <Route path='/riding' element={<Riding/>} />
+        <Route path='/driver-riding' element={<DriverRiding/>} />
         <Route path='/driver-dashboard' element={
           <DriverWrapper>
             <DriverDash/>

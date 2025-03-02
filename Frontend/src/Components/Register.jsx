@@ -28,6 +28,7 @@ export default function RegisterPage() {
     if (response.status === 201) {
       const data = response.data;
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.user._id);
       navigate("/home");
     }
   };

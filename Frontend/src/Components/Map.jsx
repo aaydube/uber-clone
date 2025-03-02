@@ -8,7 +8,7 @@ const containerStyle = {
 
 const defaultCenter = { lat: 37.7749, lng: -122.4194 };
 
-const LiveTrackingMap = () => {
+const Map = () => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
   });
@@ -35,9 +35,9 @@ const LiveTrackingMap = () => {
     };
     
     const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       maximumAge: 0,
-      timeout: 5000,
+      timeout: 10000,
     });
   
     return () => navigator.geolocation.clearWatch(watchId);
@@ -51,6 +51,8 @@ const LiveTrackingMap = () => {
       </div>
     );
   }
+
+  
 
   return (
     <div className="relative w-full h-[500px] rounded-lg overflow-hidden shadow-lg">
@@ -67,4 +69,4 @@ const LiveTrackingMap = () => {
   );
 };
 
-export default LiveTrackingMap;
+export default Map;

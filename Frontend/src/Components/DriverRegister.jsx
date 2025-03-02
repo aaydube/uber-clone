@@ -40,6 +40,7 @@ export default function DriverRegisterPage() {
     if (response.status === 201) {
       const data = response.data;
       localStorage.setItem("token", data.token);
+      localStorage.setItem("driverId", data.driver._id);
       navigate("/driver-dashboard");
     }
   };
