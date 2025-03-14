@@ -1,4 +1,3 @@
-const blacklistedModel = require("../models/blacklistedToken.model");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model")
 const driverModel = require("../models/driver.model")
@@ -6,11 +5,6 @@ const driverModel = require("../models/driver.model")
 module.exports.userAuth = async (req, res, next) => {
   try {
       const token = await req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
-      const isBlacklisted = await blacklistedModel.findOne({token})
-      if(isBlacklisted){
-        return res.status(401).json({message: "unauthorized"})
-      }
-
       const decoded = await jwt.verify(token , process.env.JWT_SECRET);
       const user = await userModel.findById(decoded._id)
       req.user = user
